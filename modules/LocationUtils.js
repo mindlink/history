@@ -2,7 +2,7 @@ import resolvePathname from 'resolve-pathname'
 import valueEqual from 'value-equal'
 import { parsePath } from './PathUtils'
 
-export const createLocation = (path, state, key, currentLocation) => {
+export const createLocation = (path, state, key, currentLocation, useRawPathname) => {
   let location
   if (typeof path === 'string') {
     // Two-arg form: push(path, state)
@@ -33,16 +33,13 @@ export const createLocation = (path, state, key, currentLocation) => {
       location.state = state
   }
 
-  try {
-    location.pathname = decodeURI(location.pathname)
-  } catch (e) {
-    if (e instanceof URIError) {
-      throw new URIError(
-        'Pathname "' + location.pathname + '" could not be decoded. ' +
-        'This is likely caused by an invalid percent-encoding.'
-      )
-    } else {
-      throw e
+  if (!useRawPathname) {
+    try {
+      location.pathname = decodeURI(location.pathname)
+    } catch (e) {
+      if (!(e instanceof URIError)) {
+        throw e
+      }
     }
   }
 
@@ -66,8 +63,16 @@ export const createLocation = (path, state, key, currentLocation) => {
   return location
 }
 
+export const safeDecodeURI = (path) => {
+  try {
+    return decodeURI(path);
+  } catch (e) {
+    return path;
+  }
+}
+
 export const locationsAreEqual = (a, b) =>
-  a.pathname === b.pathname &&
+  safeDecodeURI(a.pathname) === safeDecodeURI(b.pathname) &&
   a.search === b.search &&
   a.hash === b.hash &&
   a.key === b.key &&

@@ -20,18 +20,27 @@ import {
 
 const HashChangeEvent = 'hashchange'
 
+const addTrailingSlashIfRequired = (path) => {
+  return path[path.length - 1] === ' ' ? path + '/' : path;
+}
+
+const normalizePathForHash = (path) => {
+  const pathParts = path.split('/');
+  return pathParts.map(encodeURIComponent).join('/');
+}
+
 const HashPathCoders = {
   hashbang: {
-    encodePath: (path) => path.charAt(0) === '!' ? path : '!/' + stripLeadingSlash(path),
-    decodePath: (path) => path.charAt(0) === '!' ? path.substr(1) : path
+    encodePath: (path) => addTrailingSlashIfRequired(path.charAt(0) === '!' ? path : '!/' + stripLeadingSlash(path)),
+    decodePath: (path) => addTrailingSlashIfRequired(path.charAt(0) === '!' ? path.substr(1) : path)
   },
   noslash: {
-    encodePath: stripLeadingSlash,
-    decodePath: addLeadingSlash
+    encodePath: (path) => addTrailingSlashIfRequired(stripLeadingSlash(path)),
+    decodePath: (path) => addTrailingSlashIfRequired(addLeadingSlash(path))
   },
   slash: {
-    encodePath: addLeadingSlash,
-    decodePath: addLeadingSlash
+    encodePath: (path) => addTrailingSlashIfRequired(addLeadingSlash),
+    decodePath: (path) => addTrailingSlashIfRequired(addLeadingSlash)
   }
 }
 
@@ -113,6 +122,8 @@ const createHashHistory = (props = {}) => {
       const location = getDOMLocation()
       const prevLocation = history.location
 
+
+
       if (!forceNextPop && locationsAreEqual(prevLocation, location))
         return // A hashchange doesn't always == location change.
 
@@ -189,7 +200,7 @@ const createHashHistory = (props = {}) => {
     )
 
     const action = 'PUSH'
-    const location = createLocation(path, undefined, undefined, history.location)
+    const location = createLocation(path, undefined, undefined, history.location, true)
 
     transitionManager.confirmTransitionTo(location, action, getUserConfirmation, (ok) => {
       if (!ok)
@@ -197,14 +208,14 @@ const createHashHistory = (props = {}) => {
 
       const path = createPath(location)
       const encodedPath = encodePath(basename + path)
-      const hashChanged = getHashPath() !== encodedPath
+      const hashChanged = safeDecodeURI(getHashPath()) !== encodedPath
 
       if (hashChanged) {
         // We cannot tell if a hashchange was caused by a PUSH, so we'd
         // rather setState here and ignore the hashchange. The caveat here
         // is that other hash histories in the page will consider it a POP.
         ignorePath = path
-        pushHashPath(encodedPath)
+        pushHashPath(normalizePathForHash(encodedPath))
 
         const prevIndex = allPaths.lastIndexOf(createPath(history.location))
         const nextPaths = allPaths.slice(0, prevIndex === -1 ? 0 : prevIndex + 1)
