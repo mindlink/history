@@ -1,6 +1,6 @@
 import warning from 'warning'
 import invariant from 'invariant'
-import { createLocation, locationsAreEqual } from './LocationUtils'
+import { createLocation, locationsAreEqual, safeDecodeURI } from './LocationUtils'
 import {
   addLeadingSlash,
   stripLeadingSlash,
