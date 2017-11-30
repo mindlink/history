@@ -39,8 +39,8 @@ const HashPathCoders = {
     decodePath: (path) => addTrailingSlashIfRequired(addLeadingSlash(path))
   },
   slash: {
-    encodePath: (path) => addTrailingSlashIfRequired(addLeadingSlash),
-    decodePath: (path) => addTrailingSlashIfRequired(addLeadingSlash)
+    encodePath: (path) => addTrailingSlashIfRequired(addLeadingSlash(path)),
+    decodePath: (path) => addTrailingSlashIfRequired(addLeadingSlash(path))
   }
 }
 
