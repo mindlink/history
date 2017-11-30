@@ -54,10 +54,10 @@ var HashPathCoders = {
   },
   slash: {
     encodePath: function encodePath(path) {
-      return addTrailingSlashIfRequired(_PathUtils.addLeadingSlash);
+      return addTrailingSlashIfRequired((0, _PathUtils.addLeadingSlash)(path));
     },
     decodePath: function decodePath(path) {
-      return addTrailingSlashIfRequired(_PathUtils.addLeadingSlash);
+      return addTrailingSlashIfRequired((0, _PathUtils.addLeadingSlash)(path));
     }
   }
 };

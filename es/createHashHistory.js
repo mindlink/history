@@ -37,10 +37,10 @@ var HashPathCoders = {
   },
   slash: {
     encodePath: function encodePath(path) {
-      return addTrailingSlashIfRequired(addLeadingSlash);
+      return addTrailingSlashIfRequired(addLeadingSlash(path));
     },
     decodePath: function decodePath(path) {
-      return addTrailingSlashIfRequired(addLeadingSlash);
+      return addTrailingSlashIfRequired(addLeadingSlash(path));
     }
   }
 };
