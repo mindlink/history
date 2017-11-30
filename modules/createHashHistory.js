@@ -24,9 +24,11 @@ const addTrailingSlashIfRequired = (path) => {
   return path[path.length - 1] === ' ' ? path + '/' : path;
 }
 
+const specialPathCharacterRegex = /[%#?]/g;
+
 const normalizePathForHash = (path) => {
   const pathParts = path.split('/');
-  return pathParts.map(encodeURIComponent).join('/');
+  return pathParts.map(part => specialPathCharacterRegex.test(part) ? encodeURIComponent(part) : part).join('/');
 }
 
 const HashPathCoders = {
