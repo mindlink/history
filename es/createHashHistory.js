@@ -13,9 +13,13 @@ var addTrailingSlashIfRequired = function addTrailingSlashIfRequired(path) {
   return path[path.length - 1] === ' ' ? path + '/' : path;
 };
 
+var specialPathCharacterRegex = /[%#?]/g;
+
 var normalizePathForHash = function normalizePathForHash(path) {
   var pathParts = path.split('/');
-  return pathParts.map(encodeURIComponent).join('/');
+  return pathParts.map(function (part) {
+    return specialPathCharacterRegex.test(part) ? encodeURIComponent(part) : part;
+  }).join('/');
 };
 
 var HashPathCoders = {
