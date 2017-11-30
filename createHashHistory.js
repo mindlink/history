@@ -210,7 +210,7 @@ var createHashHistory = function createHashHistory() {
 
       var path = (0, _PathUtils.createPath)(location);
       var encodedPath = encodePath(basename + path);
-      var hashChanged = safeDecodeURI(getHashPath()) !== encodedPath;
+      var hashChanged = (0, _LocationUtils.safeDecodeURI)(getHashPath()) !== encodedPath;
 
       if (hashChanged) {
         // We cannot tell if a hashchange was caused by a PUSH, so we'd

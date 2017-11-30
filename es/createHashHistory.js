@@ -2,7 +2,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 import warning from 'warning';
 import invariant from 'invariant';
-import { createLocation, locationsAreEqual } from './LocationUtils';
+import { createLocation, locationsAreEqual, safeDecodeURI } from './LocationUtils';
 import { addLeadingSlash, stripLeadingSlash, stripTrailingSlash, hasBasename, stripBasename, createPath } from './PathUtils';
 import createTransitionManager from './createTransitionManager';
 import { canUseDOM, addEventListener, removeEventListener, getConfirmation, supportsGoWithoutReloadUsingHash } from './DOMUtils';
